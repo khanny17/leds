@@ -1,7 +1,7 @@
 #include "receiver.h"
 
 Receiver::Receiver(int interruptNumber, uint8_t deviceID) {
-    rf.enableReceive(interruptNumber);
+    rf.enableReceive(digitalPinToInterrupt(interruptNumber));
 
     this->deviceID = deviceID;
     this->prevMessage = NULL;
@@ -13,9 +13,11 @@ bool Receiver::check(RFMessage** output) {
         return false;
     }
 
+    uint32_t raw = rf.getReceivedValue();
+    rf.resetAvailable();
 
     //Message available, convert and save in our currentMessage
-    RFMessage *newMessage = intToRFMessage((uint32_t)rf.getReceivedValue());
+    RFMessage *newMessage = intToRFMessage(raw);
 
     //If its not for us, ignore
     if(newMessage->destinationID != deviceID) {
@@ -24,7 +26,8 @@ bool Receiver::check(RFMessage** output) {
 
     //If we just got this message or if this is the first one, ignore
     if(prevMessage != NULL && prevMessage->messageID == newMessage->messageID) {
-        return false;
+      Serial.println("ignoring");
+        //return false;
     }
 
     //tell the output about the currentMessage

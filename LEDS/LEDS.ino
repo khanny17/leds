@@ -27,30 +27,37 @@ Control *leds;
 RFMessage *message;
 Receiver *receiver;
 Mode mode;
+
+void swirl();
  
 void setup() {
+  Serial.begin(9600);
   leds = new Control(REDPIN, GREENPIN, BLUEPIN);
-  receiver = new Receiver(INTERRUPT_NUM, DEVICE_ID);
-  message = NULL;
-  mode = SWIRL;
+  //receiver = new Receiver(INTERRUPT_NUM, DEVICE_ID);
+  //message = NULL;
+  //mode = SWIRL;
 }
  
  
 void loop() {
-  checkCommands();
-
+  //checkCommands();
+/*
   switch(mode) {
     case SWIRL:
+    Serial.println("S");
       swirl();
       break;
     case PARTY:
+    Serial.println("P");
       party();
       break;
     case WHITE:
-    default:
+    Serial.println("W");
       white();
       break;
-  }
+  }*/
+
+  swirl();
 
   delay(SPEED);
 }
@@ -65,7 +72,7 @@ void checkCommands() {
         case SWIRL_CMD:
           mode = SWIRL;
           break;
-        default:
+        case WHITE_CMD:
           mode = WHITE;
           break;
       }
@@ -84,10 +91,11 @@ void swirl()
 void party()
 {
   static int cycles = 0; //used to slow down the switching of colors 
-  if(cycles == 0) {
+  /*if(cycles == 0) {
     leds->sendHSV(random(0,360), 100, 100);
   }
-  cycles = (cycles + 1) % partyModeMaxCycles; //increment with wraparound
+  cycles = (cycles + 1) % partyModeMaxCycles; //increment with wraparound*/
+  leds->sendRGB(255,0,0);
 }
 
 void white()
