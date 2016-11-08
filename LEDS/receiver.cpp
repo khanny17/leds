@@ -16,6 +16,8 @@ bool Receiver::check(RFMessage** output) {
     uint32_t raw = rf.getReceivedValue();
     rf.resetAvailable();
 
+    Serial.println("got it");
+
     //Message available, convert and save in our currentMessage
     RFMessage *newMessage = intToRFMessage(raw);
 

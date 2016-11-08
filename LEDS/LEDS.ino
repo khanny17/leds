@@ -2,7 +2,7 @@
 #include "Control.h"
 #include "receiver.h"
 
-#define INTERRUPT_NUM 2
+#define RECEIVER_PIN 2
 #define DEVICE_ID 2
 #define WHITE_CMD 0
 #define SWIRL_CMD 1
@@ -12,10 +12,10 @@
 #define GREENPIN 6
 #define BLUEPIN 3
  
-#define SPEED 5     // loop delay in ms
+#define SPEED 50     // loop delay in ms
 
 //We want to switch colors every second. SPEED is in ms
-static int partyModeMaxCycles = 60000 / SPEED;
+static int partyModeMaxCycles = 10;
 
 typedef enum Mode {
     WHITE,
@@ -33,32 +33,26 @@ void swirl();
 void setup() {
   Serial.begin(9600);
   leds = new Control(REDPIN, GREENPIN, BLUEPIN);
-  //receiver = new Receiver(INTERRUPT_NUM, DEVICE_ID);
-  //message = NULL;
-  //mode = SWIRL;
+  receiver = new Receiver(RECEIVER_PIN, DEVICE_ID);
+  message = NULL;
+  mode = SWIRL;
 }
  
- 
 void loop() {
-  //checkCommands();
-/*
+  checkCommands();
+
   switch(mode) {
     case SWIRL:
-    Serial.println("S");
       swirl();
       break;
     case PARTY:
-    Serial.println("P");
       party();
       break;
     case WHITE:
-    Serial.println("W");
       white();
       break;
-  }*/
-
-  swirl();
-
+  }
+  
   delay(SPEED);
 }
 
@@ -83,7 +77,7 @@ int swirlHue = 0;
 void swirl()
 {
   swirlHue = swirlHue % 360;
-  leds->sendHSV(swirlHue, 100, 100);
+  leds->sendHSV((double)swirlHue/360, 1, 1);
   swirlHue++;
 }
 
@@ -91,11 +85,10 @@ void swirl()
 void party()
 {
   static int cycles = 0; //used to slow down the switching of colors 
-  /*if(cycles == 0) {
-    leds->sendHSV(random(0,360), 100, 100);
+  if(cycles == 0) {
+    leds->sendHSV(((double)random(0,360))/360, 1, 1);
   }
-  cycles = (cycles + 1) % partyModeMaxCycles; //increment with wraparound*/
-  leds->sendRGB(255,0,0);
+  cycles = (cycles + 1) % partyModeMaxCycles; //increment with wraparound
 }
 
 void white()

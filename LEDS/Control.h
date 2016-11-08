@@ -11,8 +11,8 @@ class Control
     
     void sendWhite();
     void sendRGB(unsigned char r, unsigned char g, unsigned char b);
-    void sendRGB(RGB *val);
-    void sendHSV(int hue, int saturation, int value);
+    void sendHSV(double hue, double saturation, double value);
+    void sendHSL(double hue, double saturation, double l);
 
   private:
     int redPin, greenPin, bluePin;

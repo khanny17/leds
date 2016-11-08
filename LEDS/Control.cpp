@@ -25,15 +25,17 @@ void Control::sendRGB(unsigned char r, unsigned char g, unsigned char b)
   analogWrite(bluePin, b);
 }
 
-void Control::sendRGB(RGB *values)
+void Control::sendHSV(double hue, double saturation, double value)
 {
-  analogWrite(redPin, values->r);
-  analogWrite(greenPin, values->g);
-  analogWrite(bluePin, values->b);
+    byte rgb[3];
+    converter.hsvToRgb(hue, saturation, value, rgb);
+    sendRGB(rgb[0], rgb[1], rgb[2]);
 }
 
-void Control::sendHSV(int hue, int saturation, int value)
+void Control::sendHSL(double hue, double saturation, double l)
 {
-    sendRGB(converter.hsvToRgb((double)hue, (double)saturation, (double)value));
+    byte rgb[3];
+    converter.hslToRgb(hue, saturation, l, rgb);
+    sendRGB(rgb[0], rgb[1], rgb[2]);
 }
 
